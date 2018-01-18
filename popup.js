@@ -22,8 +22,9 @@
   
   function hide() {
     let load = document.getElementById("loading");
-    let input = document.getElementById("input");
+    let complete = document.getElementById("complete");
+
     load.style.display  = "none";
-    input.style.display  = "block";
+    complete.style.display = "inline";
   }
 
