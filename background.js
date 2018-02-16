@@ -6,13 +6,13 @@ const API_URL = 'https://www.googleapis.com/urlshortener/v1/url';
 let TAB_URL = '';
 
 function onGot(page) {
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-      TAB_URL = tabs[0].url;
-      // console.log('url: '+ TAB_URL);
-      // console.log(page);
-      if (TAB_URL) {
-        shortenLink(TAB_URL); 
-      }
+  chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
+    TAB_URL = tabs[0].url;
+    // console.log('url: '+ TAB_URL);
+    // console.log(page);
+    if (TAB_URL) {
+      shortenLink(TAB_URL);
+    }
   });
 }
 
@@ -24,19 +24,19 @@ function onError(error) {
 }
 
 function shortenLink(link) {
-    const basename = "https://www.googleapis.com";
-    const urlfrag = "/urlshortener/v1/url?key=" + API_KEY;
-    const longUrl = encodeURIComponent(link);
-    const xhr = new XMLHttpRequest();
-    
-    xhr.open("POST", basename + urlfrag, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    xhr.onreadystatechange = function () {
-      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        const response = (JSON.parse(xhr.responseText));
-        setURLshorten(response.id);
-      }
-    };
-    
-    xhr.send(JSON.stringify({"longUrl": link}));
+  const basename = "https://www.googleapis.com";
+  const urlfrag = "/urlshortener/v1/url?key=" + API_KEY;
+  const longUrl = encodeURIComponent(link);
+  const xhr = new XMLHttpRequest();
+
+  xhr.open("POST", basename + urlfrag, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+      const response = (JSON.parse(xhr.responseText));
+      setURLshorten(response.id);
+    }
+  };
+
+  xhr.send(JSON.stringify({ "longUrl": link }));
 }
