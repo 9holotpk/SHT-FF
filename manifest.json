@@ -1,34 +1,33 @@
-{ 
+{
   "applications": {
     "gecko": {
       "id": "iShortener@9holotpk",
       "strict_min_version": "51.0"
     }
   },
-
   "browser_action": {
-    "default_icon": "icons/link_128.png", 
+    "default_icon": "icons/link_128.png",
     "default_title": "Click for Shorten URL",
     "default_popup": "popup.html"
   },
-  "description": "Fast Shorten URL for Web", 
+  "description": "Fast Shorten URL for Web",
   "icons": {
-    "128": "icons/link_128.png", 
-    "64": "icons/link_64.png", 
+    "128": "icons/link_128.png",
+    "64": "icons/link_64.png",
     "16": "icons/link_16.png"
-  }, 
-  "name": "iShortener", 
-  "version": "0.4.1", 
-  "manifest_version": 2, 
+  },
+  "name": "iShortener",
+  "version": "0.4.3",
+  "manifest_version": 2,
   "permissions": [
-    "tabs", 
+    "tabs",
     "storage",
     "activeTab",
     "<all_urls>",
     "clipboardWrite"
-    ], 
+  ],
   "developer": {
-    "url": "http://twitter.com/9holotpk", 
+    "url": "http://twitter.com/9holotpk",
     "name": "Sontaya T. Wichakot"
   }
 }

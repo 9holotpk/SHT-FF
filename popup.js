@@ -33,7 +33,7 @@ function share(shtURL, title_o) {
   let url = encodeURI(shtURL);
   let tweet = document.getElementById("tweet");
   let facebook = document.getElementById("facebook");
-  tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=twitterapi%2Ctwitter&text=" + title + "&hashtags=iShortener";
+  tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + "&hashtags=iShortener";
   document.getElementsByTagName('iframe')[1].parentNode.appendChild(tweet);
 
   facebook.src = "https://www.facebook.com/plugins/share_button.php?href=" + shtURL + "&layout=button&size=small&mobile_iframe=true&width=60&height=20&appId";
