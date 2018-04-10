@@ -17,7 +17,7 @@
     "16": "icons/link_16.png"
   },
   "name": "iShortener",
-  "version": "0.4.4",
+  "version": "1.0",
   "manifest_version": 2,
   "permissions": [
     "tabs",
