@@ -5,6 +5,7 @@
 document.getElementById('optionsX').addEventListener('click', show_options);
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('tag').addEventListener('click', save_optionsX);
+document.getElementById('sharebt').addEventListener('click', save_optionsX);
 
 // # Value
 let w_hashtags = "&hashtags=iShortener";
@@ -12,7 +13,7 @@ let w_hashtags = "&hashtags=iShortener";
 function restore_options() { 
   let manifestData = browser.runtime.getManifest();
   let version = document.getElementById('version');
-  let getting = browser.storage.local.get("twitterTag");
+  let getting = browser.storage.local.get(["twitterTag","sharebutton"]);
 
   getting.then(onGotX, onError);
   version.textContent = '「 ver. ' + manifestData.version + ' 」';
@@ -20,7 +21,9 @@ function restore_options() {
 }
 
 function onGotX(items) {
+  console.log(items.sharebutton)
   let tag = document.getElementById('tag');
+  let sharebt = document.getElementById('sharebt');
   if (items.twitterTag) {
     tag.checked = items.twitterTag.value;
     if (items.twitterTag.value == true) {
@@ -30,6 +33,17 @@ function onGotX(items) {
     }
   } else {
     tag.checked = true;
+  }
+  if (items.sharebutton) {
+    sharebt.checked = items.sharebutton.value;
+    let show_button = document.getElementById('shareX');
+    if (items.sharebutton.value) {
+      show_button.style.display = "block";
+    } else {
+      show_button.style.display = "none";
+    }
+  } else {
+    sharebt.checked = true;
   }    
 }
 
@@ -82,13 +96,25 @@ function show_options() {
 
 function save_optionsX() {
   let tag = document.getElementById('tag').checked;
+  let sharebt = document.getElementById('sharebt').checked;
+  let show_button = document.getElementById('shareX');
+
+  if (sharebt) {
+    show_button.style.display = "block";
+  } else {
+    show_button.style.display = "none";
+  }
   // define objects
   var twitterTag = {
     name: "#",
     value: tag,
   }
+  var sharebutton = {
+    name: "Facebook, Twitter",
+    value: sharebt,
+  }
   // store the objects
-  browser.storage.local.set({twitterTag})
+  browser.storage.local.set({twitterTag, sharebutton})
   .then(setItem, onError);
 }
 

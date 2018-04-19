@@ -27,7 +27,7 @@ function onGot(page) {
         let load = document.getElementById("loading");
         let faq = document.getElementById("faq");
         let noURL = document.getElementById("noURL");
-        let share = document.getElementById("share");
+        let share = document.getElementById("shareX");
 
         load.style.display = "none";
         faq.style.display = "inline";
