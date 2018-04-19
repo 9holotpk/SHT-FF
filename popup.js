@@ -1,8 +1,39 @@
 // DEV. EXTENTION BY iTON // => POPUP.JS
 // NOTE: Click to Shorten URL
 
+// # Event
+document.getElementById('optionsX').addEventListener('click', show_options);
+document.addEventListener('DOMContentLoaded', restore_options);
+document.getElementById('tag').addEventListener('click', save_optionsX);
+
+// # Value
+let w_hashtags = "&hashtags=iShortener";
+
+function restore_options() { 
+  let manifestData = browser.runtime.getManifest();
+  let version = document.getElementById('version');
+  let getting = browser.storage.local.get("twitterTag");
+
+  getting.then(onGotX, onError);
+  version.textContent = '「 ver. ' + manifestData.version + ' 」';
+  
+}
+
+function onGotX(items) {
+  let tag = document.getElementById('tag');
+  if (items.twitterTag) {
+    tag.checked = items.twitterTag.value;
+    if (items.twitterTag.value == true) {
+      w_hashtags = "&hashtags=iShortener";
+    } else {
+      w_hashtags = '';
+    }
+  } else {
+    tag.checked = true;
+  }    
+}
+
 function setURLshorten(shtURL, title) {
-  // console.log(shtURL);
   let input = document.getElementById("url");
   if (shtURL != undefined) {
     hide();
@@ -10,7 +41,6 @@ function setURLshorten(shtURL, title) {
     copy();
     share(shtURL, title);
   }
-
 }
 
 function copy() {
@@ -33,11 +63,41 @@ function share(shtURL, title_o) {
   let url = encodeURI(shtURL);
   let tweet = document.getElementById("tweet");
   let facebook = document.getElementById("facebook");
-  tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + "&hashtags=iShortener";
+  let hashtags = w_hashtags;
+  tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + hashtags;
   document.getElementsByTagName('iframe')[1].parentNode.appendChild(tweet);
 
   facebook.src = "https://www.facebook.com/plugins/share_button.php?href=" + shtURL + "&layout=button&size=small&mobile_iframe=true&width=60&height=20&appId";
   document.getElementsByTagName('iframe')[0].parentNode.appendChild(facebook);
+}
+
+function show_options() {
+  var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
+function save_optionsX() {
+  let tag = document.getElementById('tag').checked;
+  // define objects
+  var twitterTag = {
+    name: "#",
+    value: tag,
+  }
+  // store the objects
+  browser.storage.local.set({twitterTag})
+  .then(setItem, onError);
+}
+
+function setItem() {
+  // console.log("OK");
+}
+
+function onError(error) {
+  console.log(`Error: ${error}`);
 }
 
 

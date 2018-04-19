@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="popup.js"></script>
-    <script type="text/javascript" src="background.js"></script>
+    <!-- <script type="text/javascript" src="popup.js"></script>
+    <script type="text/javascript" src="background.js"></script> -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div id="input">
         <input type="text" name="shortURL" id="url" value="">
@@ -16,7 +15,7 @@
     </div>
     <pre></pre>
     <div id="noURL" align="center" style="display:none; vertical-align: middle;">
-        <a align="center" style="font: 0.8em sans-serif;">~ No URL ~</a>
+        <a align="center" style="font: 0.8em sans-serif; color: rgb(180, 5, 5)">~ No URL ~</a>
     </div>
     <div id="share" align="center" >
         <iframe id="facebook" src="" 
@@ -27,7 +26,27 @@
             width="80" height="20" title="Twitter Tweet Button" style="border: 0; overflow: hidden;">
         </iframe>
     </div>
-
+    <div align="center">
+        <a id="optionsX">	
+            <span class="options">Options</span>
+        </a>
+    </div>
+    <div class="border" align="center" id="myDIV" style="display: none;">
+        <!-- <a>
+            <span>
+                <img src="img/setting.svg" id="setting" alt="setting" style="vertical-align: middle;" >
+            </span>
+        </a> -->
+        <br>
+        <input type="checkbox" name="tag" id="tag"><a class="textOption">include # in Tweet</a>
+        <br>
+        <a class="textOptionHelp">(Takes effect the next time.)</a>
+        <br><br>
+        
+    </div>
+    <div class="version" align="center"><a id="version">「ver.」</a></div>
+    <script src="popup.js"></script>
+    <script type="text/javascript" src="background.js"></script>
 </body>
 
 </html>
