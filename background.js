@@ -20,7 +20,20 @@ function onGot(page) {
     // console.log('url: '+ TAB_URL);
     // console.log(page);
     if (TAB_URL) {
-      shortenLink(TAB_URL, TITLE);
+      let URL_RES = TAB_URL.substring(0, 4);
+      if (URL_RES === 'http') {
+        shortenLink(TAB_URL, TITLE);
+      } else {
+        let load = document.getElementById("loading");
+        let faq = document.getElementById("faq");
+        let noURL = document.getElementById("noURL");
+        let share = document.getElementById("share");
+
+        load.style.display = "none";
+        faq.style.display = "inline";
+        share.style.display = "none";
+        noURL.style.display = "block";
+      }
     }
   });
 }

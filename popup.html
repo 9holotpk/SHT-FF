@@ -10,11 +10,15 @@
 <body>
     <div id="input">
         <input type="text" name="shortURL" id="url" value="">
-        <img src="img/loading.svg" id="loading" alt="" height="25px" style="vertical-align: middle;">
-        <img src="img/checked-pin.svg" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
+        <img src="img/load.gif" id="loading" alt="" height="20px" style="vertical-align: middle;">
+        <img src="img/medal.png" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
+        <img src="img/faq.png" id="faq" alt="" height="20px" style="display:none; vertical-align: middle;">
     </div>
     <pre></pre>
-    <div align="center" >
+    <div id="noURL" align="center" style="display:none; vertical-align: middle;">
+        <a align="center" style="font: 0.8em sans-serif;">~ No URL ~</a>
+    </div>
+    <div id="share" align="center" >
         <iframe id="facebook" src="" 
             width="60" height="20" style="border:none;overflow:hidden" 
             scrolling="no" frameborder="0" allowTransparency="true">
