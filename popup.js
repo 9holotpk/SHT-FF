@@ -1,5 +1,6 @@
 // DEV. EXTENTION BY iTON // => POPUP.JS
 // NOTE: Click to Shorten URL
+// UPDATE:  14/06/2018  - Optimize update and Bug fixed.
 
 // # Event
 document.getElementById('optionsX').addEventListener('click', show_options);
@@ -9,6 +10,42 @@ document.getElementById('sharebt').addEventListener('click', save_optionsX);
 
 // # Value
 let w_hashtags = "&hashtags=iShortener";
+
+// # Onload
+onGot();
+
+function onGot() {
+  browser.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
+    TAB_URL = tabs[0].url;
+    TITLE = tabs[0].title;
+    // console.log('Page: (' + tabs[0].id + ') ' + TITLE);
+    if (TAB_URL) {
+      let URL_RES = TAB_URL.substring(0, 4);
+      if (URL_RES === 'http') {
+        browser.runtime.sendMessage({script: "shortenLink", tab_url: TAB_URL, title: TITLE});
+      } else {
+        let load = document.getElementById("loading");
+        let faq = document.getElementById("faq");
+        let noURL = document.getElementById("noURL");
+        let share = document.getElementById("shareX");
+
+        load.style.display = "none";
+        faq.style.display = "inline";
+        share.style.display = "none";
+        noURL.style.display = "block";
+      }
+    }
+  });
+}
+
+browser.runtime.onMessage.addListener(
+  function (request) {
+    let resultSht = request;
+    if(resultSht.shortLink){
+      setURLshorten(resultSht.shortLink, resultSht.title);
+    }
+  }
+);
 
 function restore_options() { 
   let manifestData = browser.runtime.getManifest();
@@ -21,7 +58,6 @@ function restore_options() {
 }
 
 function onGotX(items) {
-  console.log(items.sharebutton)
   let tag = document.getElementById('tag');
   let sharebt = document.getElementById('sharebt');
   if (items.twitterTag) {

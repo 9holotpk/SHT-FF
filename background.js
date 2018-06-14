@@ -1,6 +1,7 @@
 // DEV. EXTENTION BY iTON // => BACKGROUND.JS
 // NOTE:    Click to Shorten URL
 // UPDATE:  10/04/2018 - Transitioning Google URL Shortener to Firebase Dynamic Links 
+//          14/06/2018 - Optimize update and Bug fixed.
 
 // OLD API
 // const API_KEY = 'AIzaSyCjkUcGt5h2mFyNfgJFqUXqKY1kOQnjL4g';
@@ -13,33 +14,12 @@ const API_URL = 'https://firebasedynamiclinks.googleapis.com/v1/shortLinks';
 let TAB_URL = '';
 let TITLE = '';
 
-function onGot(page) {
-  chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
-    TAB_URL = tabs[0].url;
-    TITLE = tabs[0].title;
-    // console.log('url: '+ TAB_URL);
-    // console.log(page);
-    if (TAB_URL) {
-      let URL_RES = TAB_URL.substring(0, 4);
-      if (URL_RES === 'http') {
-        shortenLink(TAB_URL, TITLE);
-      } else {
-        let load = document.getElementById("loading");
-        let faq = document.getElementById("faq");
-        let noURL = document.getElementById("noURL");
-        let share = document.getElementById("shareX");
-
-        load.style.display = "none";
-        faq.style.display = "inline";
-        share.style.display = "none";
-        noURL.style.display = "block";
-      }
-    }
-  });
-}
-
-const getting = browser.runtime.getBackgroundPage();
-getting.then(onGot, onError);
+browser.runtime.onMessage.addListener(function (request) {
+  let resultX = request;
+  if (resultX.script === "shortenLink") {
+    shortenLink(resultX.tab_url, resultX.title);
+  }
+});
 
 function onError(error) {
   console.log(`Error: ${error}`);
@@ -60,8 +40,7 @@ function shortenLink(link, title) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       const response = (JSON.parse(xhr.responseText));
-      // setURLshorten(response.id, title);
-      setURLshorten(response.shortLink, title);
+      browser.runtime.sendMessage({shortLink: response.shortLink, title: title});
     }
   };
 
@@ -69,7 +48,7 @@ function shortenLink(link, title) {
   xhr.send(JSON.stringify({
     "dynamicLinkInfo": {
       "dynamicLinkDomain": dynamicLinkDomain,
-      "link": link
+      "link": longDynamicLink
     },
     "suffix": {
       "option": "SHORT"

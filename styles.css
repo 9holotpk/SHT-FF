@@ -27,3 +27,15 @@
     font: 0.75em 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: gray;
 }
+
+#bodyPopup {
+    width: 14em;
+}
+
+#shareX {
+    height: 2em;
+}
+
+#url {
+    width: 14em;
+}
