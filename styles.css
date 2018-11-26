@@ -1,3 +1,7 @@
+/* DEV. EXTENTION BY iTON => POPUP.JS
+NOTE:    Click to Shorten URL
+UPDATE:  26/11/2018    - Update #url #bodyPopup input size */
+
 .options {
     font: 0.8em sans-serif; 
     color: rgb(165, 164, 164);
@@ -29,7 +33,7 @@
 }
 
 #bodyPopup {
-    width: 14em;
+    /* width: 12em; */
 }
 
 #shareX {
@@ -37,5 +41,5 @@
 }
 
 #url {
-    width: 14em;
+    width: 12em;
 }
