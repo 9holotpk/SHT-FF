@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('tag').addEventListener('click', save_optionsX);
 document.getElementById('sharebt').addEventListener('click', save_optionsX);
 document.getElementById('qrcbt').addEventListener('click', save_optionsX);
-
+document.getElementById('darkmode').addEventListener('click', save_optionsX);
 
 // # Value
 let w_hashtags = "&hashtags=iShortener";
@@ -24,21 +24,17 @@ function onGot() {
   browser.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
     TAB_URL = tabs[0].url;
     TITLE = tabs[0].title;
-    // console.log('Page: (' + tabs[0].id + ') ' + TITLE);
+    console.log('Page: (' + tabs[0].id + ') ' + TITLE);
     if (TAB_URL) {
       let URL_RES = TAB_URL.substring(0, 4);
       if (URL_RES === 'http') {
         browser.runtime.sendMessage({ script: "shortenLink", tab_url: TAB_URL, title: TITLE });
       } else {
-        let load = document.getElementById("loading");
-        let faq = document.getElementById("faq");
-        let noURL = document.getElementById("noURL");
-        let share = document.getElementById("shareX");
-
-        load.style.display = "none";
-        faq.style.display = "inline";
-        share.style.display = "none";
-        noURL.style.display = "block";
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("faq").style.display = "inline";
+        document.getElementById("noURL").style.display = "block";
+        document.getElementById("shareX").style.display = "none";
+        document.getElementById("qrcX").style.display = "none";
       }
     }
   });
@@ -56,7 +52,7 @@ browser.runtime.onMessage.addListener(
 function restore_options() {
   let manifestData = browser.runtime.getManifest();
   let version = document.getElementById('version');
-  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode"]);
+  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode", "mode"]);
 
   getting.then(onGotX, onError);
   version.textContent = '「 ver. ' + manifestData.version + ' 」';
@@ -67,6 +63,8 @@ function onGotX(items) {
   let tag = document.getElementById('tag');
   let sharebt = document.getElementById('sharebt');
   let qrcbt = document.getElementById('qrcbt');
+  let darkbt = document.getElementById('darkmode');
+
   if (items.twitterTag) {
     tag.checked = items.twitterTag.value;
     if (items.twitterTag.value == true) {
@@ -99,6 +97,16 @@ function onGotX(items) {
   } else {
     qrcbt.checked = true;
   }
+  if (items.mode) {
+    darkbt.checked = items.mode.value;
+    if (items.mode.value) {
+      document.getElementById("theme").classList.add('darkmode');
+    } else {
+      document.getElementById("theme").classList.remove('darkmode');
+    }
+  } else {
+    darkbt.checked = false;
+  }
 }
 
 function setURLshorten(shtURL, title) {
@@ -109,6 +117,7 @@ function setURLshorten(shtURL, title) {
     copy();
     share(shtURL, title);
     genQRC(shtURL);
+    input.blur()
   }
 }
 
@@ -164,11 +173,18 @@ function save_optionsX() {
   let show_button = document.getElementById('shareX');
   let qrcbt = document.getElementById('qrcbt').checked;
   let show_qrc = document.getElementById('qrcX');
+  let darkbt = document.getElementById('darkmode').checked;
 
   if (qrcbt) {
     show_qrc.style.display = "block";
   } else {
     show_qrc.style.display = "none";
+  }
+
+  if (darkbt) {
+    document.getElementById("theme").classList.add('darkmode');
+  } else {
+    document.getElementById("theme").classList.remove('darkmode');
   }
 
   if (sharebt) {
@@ -190,8 +206,14 @@ function save_optionsX() {
     value: qrcbt,
   }
 
+  var mode = {
+    name: 'Mode',
+    value: darkbt
+  }
+
+  console.log(mode);
   // store the objects
-  browser.storage.local.set({ twitterTag, sharebutton, qrcode })
+  browser.storage.local.set({ twitterTag, sharebutton, qrcode, mode })
     .then(setItem, onError);
 }
 

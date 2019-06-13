@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body id="theme">
     <div id="bodyPopup">
         <div id="input">
-            <input type="text" name="shortURL" id="url" value="">
+            <input type="text" name="shortURL" id="url" value="" class="result">
             <img src="img/load.gif" id="loading" alt="" height="20px" style="vertical-align: middle;">
             <img src="img/medal.png" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
             <img src="img/faq.png" id="faq" alt="" height="20px" style="display:none; vertical-align: middle;">
@@ -25,7 +25,7 @@
         <div id="noURL" align="center" style="display:none; vertical-align: middle;">
             <a align="center" style="font: 0.8em sans-serif; color: rgb(180, 5, 5)">~ No URL ~</a>
         </div>
-        <div id="shareX" align="center">
+        <div id="shareX" align="center" style="display:none;">
             <iframe id="facebook" src="" width="60" height="25" style="border:none;overflow:hidden" scrolling="no"
                 frameborder="0" allowTransparency="true">
             </iframe>
@@ -33,13 +33,13 @@
                 style="border: 0; overflow: hidden;">
             </iframe>
         </div>
-        <pre></pre>
         <div id="qrcX" align="center">
+            <pre></pre>
             <table class="noborder" style="width:100%">
                 <tbody>
                     <tr id="svg-xml-row">
                         <canvas id="qrcode-canvas"
-                            style="padding:1em; background-color:#E8E8E8; display: none"></canvas>
+                            style="padding:5px; background-color:#000000; display: none"></canvas>
                     </tr>
                 </tbody>
             </table>
@@ -66,6 +66,9 @@
                 <input type="checkbox" name="tag" id="tag">
                 <label for="tag" class="textOption">Include # in Tweet</label>
                 <br>
+                <input type="checkbox" name="darkmode" id="darkmode">
+                <label for="darkmode" class="textOption">Dark mode</label>
+                <br>
             </div>
             <a class="textOptionHelp">(Takes effect the next time.)</a>
             <br><br>
@@ -75,7 +78,7 @@
     </div>
 
     <script src="popup.js"></script>
-    <script src="lib/qrcodegen.js"></script>
+    <!-- <script src="lib/qrcodegen.js"></script> -->
     <!-- <script type="text/javascript" src="background.js"></script> -->
 </body>
 
