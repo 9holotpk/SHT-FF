@@ -2,7 +2,7 @@
 // NOTE: Click to Shorten URL
 // UPDATE:  14/06/2018  - Optimize update and Bug fixed.
 //          12/06/2019  - Add QR code.
-
+//          13/06/2019  - Add Dark Mode.
 
 
 
@@ -75,6 +75,7 @@ function onGotX(items) {
   } else {
     tag.checked = true;
   }
+
   if (items.sharebutton) {
     sharebt.checked = items.sharebutton.value;
     let show_button = document.getElementById('shareX');
@@ -86,6 +87,7 @@ function onGotX(items) {
   } else {
     sharebt.checked = true;
   }
+
   if (items.qrcode) {
     qrcbt.checked = items.qrcode.value;
     let show_qrc = document.getElementById('qrcX');
@@ -97,6 +99,7 @@ function onGotX(items) {
   } else {
     qrcbt.checked = true;
   }
+
   if (items.mode) {
     darkbt.checked = items.mode.value;
     if (items.mode.value) {
@@ -131,7 +134,6 @@ function genQRC(url) {
 }
 
 function copy() {
-  // console.log(document.getElementById("url").value);
   let copyText = document.querySelector("#url");
   copyText.select();
   document.execCommand("copy");
