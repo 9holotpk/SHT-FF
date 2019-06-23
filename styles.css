@@ -64,3 +64,13 @@ UPDATE: 26/11/2018  - Update #url #bodyPopup input size.
 .darkmode {
     background-color:rgb(33,33,33);
 }
+
+svg path,
+svg rect{
+  fill: rgb(19, 18, 18);
+}
+
+.darkmode svg path,
+svg rect{
+  fill: rgb(247, 247, 247);
+}

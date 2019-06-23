@@ -10,16 +10,18 @@
         "page": "background.html",
         "persistent": true
     },
-    "browser_action": {
+    "page_action": {
         "default_icon": {
-            "128": "icons/link_128.png"
+            "19": "icons/link_19.png",
+            "38": "icons/link_38.png"
         },
         "default_title": "Shorten URL & QR Code",
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "show_matches": ["<all_urls>"]
     },
     "description": "Fast Shorten URL for Web",
     "developer": {
-        "url": "http://twitter.com/9holotpk",
+        "url": "http://twitter.com/ishortener",
         "name": "Sontaya T. Wichakot"
     },
     "icons": {
@@ -38,5 +40,5 @@
         "clipboardRead"
     ],
     "short_name": "iShortener",
-    "version": "1.5.1"
+    "version": "1.6"
 }
