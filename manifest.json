@@ -17,7 +17,9 @@
         },
         "default_title": "Shorten URL & QR Code",
         "default_popup": "popup.html",
-        "show_matches": ["<all_urls>"]
+        "show_matches": [
+            "<all_urls>"
+        ]
     },
     "description": "Fast Shorten URL for Web",
     "developer": {
@@ -32,13 +34,10 @@
     "manifest_version": 2,
     "name": "iShortener",
     "permissions": [
-        "tabs",
         "storage",
         "activeTab",
-        "<all_urls>",
-        "clipboardWrite",
-        "clipboardRead"
+        "clipboardWrite"
     ],
     "short_name": "iShortener",
-    "version": "1.6"
+    "version": "1.6.3"
 }

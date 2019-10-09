@@ -14,6 +14,8 @@ document.getElementById('sharebt').addEventListener('click', save_optionsX);
 document.getElementById('qrcbt').addEventListener('click', save_optionsX);
 document.getElementById('darkmode').addEventListener('click', save_optionsX);
 
+// document.getElementById('about').addEventListener('click', gotoAbout);
+
 // # Value
 let w_hashtags = "&hashtags=iShortener";
 
@@ -34,6 +36,7 @@ function onGot() {
         document.getElementById("faq").style.display = "inline";
         document.getElementById("noURL").style.display = "block";
         document.getElementById("shareX").style.display = "none";
+        document.getElementById("dnt").style.display = "none";
         document.getElementById("qrcX").style.display = "none";
       }
     }
@@ -45,9 +48,24 @@ browser.runtime.onMessage.addListener(
     let resultSht = request;
     if (resultSht.shortLink) {
       setURLshorten(resultSht.shortLink, resultSht.title);
+      // checkDNT();
     }
   }
 );
+
+function checkDNT() {
+  console.log('doNotTrack', window.navigator.doNotTrack);
+  // alert("doNotTrack");
+  let dnt = window.navigator.doNotTrack;
+  if (dnt == "1") {
+    // document.getElementById("shareX").style.display = "none";
+    document.getElementById("dnt").style.display = "block";
+    document.getElementById("shareY").style.display = "none";
+  } else {
+    document.getElementById("shareY").style.display = "block";
+    document.getElementById("dnt").style.display = "none";
+  }
+}
 
 function restore_options() {
   let manifestData = browser.runtime.getManifest();
@@ -145,9 +163,11 @@ function hide() {
 
   load.style.display = "none";
   complete.style.display = "inline";
+  checkDNT();
 }
 
 function share(shtURL, title_o) {
+  // checkDNT();
   let title = encodeURI(title_o)
   let url = encodeURI(shtURL);
   let tweet = document.getElementById("tweet");
@@ -167,6 +187,14 @@ function show_options() {
   } else {
     x.style.display = "none";
   }
+}
+
+function gotoAbout() {
+  window.open(
+    'about:addons',
+    '_blank' // <- This is what makes it open in a new window.
+  );
+
 }
 
 function save_optionsX() {
