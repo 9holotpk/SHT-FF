@@ -42,6 +42,7 @@ UPDATE: 26/11/2018  - Update #url #bodyPopup input size.
 
 .border {
     border: 1px #e1e4e8 solid !important;
+    border-radius: 5px;
 }
 
 .version {
@@ -73,4 +74,50 @@ svg rect{
 .darkmode svg path,
 svg rect{
   fill: rgb(247, 247, 247);
+}
+
+#my-icon .circle {
+	animation: circle-animation 0.5s ease-out forwards;
+	opacity: 0;
+	transform: scale(0.9);
+	transform-origin: center;
+}
+
+@keyframes circle-animation {
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+#my-icon .checkmark {
+	animation: checkmark-animation 1s ease-out forwards;
+	stroke-dasharray: 400;
+	stroke-dashoffset: 400;
+	stroke: #cfd8dc;
+	transform-origin: center;
+}
+
+@keyframes checkmark-animation {
+	40% {
+		transform: scale(1);
+	}
+	55% {
+		stroke: #cfd8dc;
+		transform: scale(1.2);
+	}
+	70% {
+		transform: scale(1);
+	}
+	100% {
+		stroke-dashoffset: 0;
+		transform: scale(1);
+		stroke: #21b587;
+	}
+}
+
+input {
+    border-radius: 5px;
+    background-color: lightgrey;
+    border:3px solid lightgrey;
 }

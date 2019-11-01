@@ -17,10 +17,9 @@
     <div id="bodyPopup">
         <div id="input">
             <input type="text" name="shortURL" id="url" value="" class="result">
-            <!-- <img src="img/loading.svg" id="loading" alt="" height="20px" style="vertical-align: middle;"> -->
-            <a id="loading" style="vertical-align: middle;">
-                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px"
+            <a id="loading" height="20px" style="vertical-align: middle;">
+                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" style="vertical-align: -15%;"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px"
                     viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <path fill="#000"
                         d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
@@ -29,7 +28,17 @@
                     </path>
                 </svg>
             </a>
-            <img src="img/okey.svg" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
+            <a id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
+                <svg id="my-icon" aria-labelledby="svg-my-icon-title" focusable="false"  style="vertical-align: -15%;"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" width="20px" height="20px">
+                    <title id="svg-my-icon-title">Checkmark Icon</title>
+                    <circle class="circle" cx="145" cy="145" r="124.67"
+                        style="fill:none;stroke:#cfd8dc;stroke-miterlimit:10;stroke-width:20px" />
+                    <polyline class="checkmark" points="88.75 148.26 124.09 183.6 201.37 106.32"
+                        style="fill:none;stroke:#21b587;stroke-linecap:round;stroke-linejoin:round;stroke-width:25px" />
+                </svg>
+            </a>
+            <!-- <img src="img/okey.svg" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;"> -->
             <img src="img/faq.png" id="faq" alt="" height="20px" style="display:none; vertical-align: middle;">
         </div>
         <pre></pre>
@@ -62,7 +71,7 @@
                 <tbody>
                     <tr id="svg-xml-row">
                         <canvas id="qrcode-canvas"
-                            style="padding:5px; background-color:#000000; display: none"></canvas>
+                            style="padding:5px;  display: none"></canvas>
                     </tr>
                 </tbody>
             </table>
