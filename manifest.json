@@ -7,13 +7,13 @@
     },
     "author": "9holotpk",
     "background": {
-        "page": "background.html",
+        "scripts": ["background.js"],
         "persistent": true
     },
     "page_action": {
         "default_icon": {
-            "19": "icons/link_19.png",
-            "38": "icons/link_38.png"
+            "19": "icons/link.svg",
+            "38": "icons/link.svg"
         },
         "default_title": "Shorten URL & QR Code",
         "default_popup": "popup.html",
@@ -27,9 +27,9 @@
         "name": "Sontaya T. Wichakot"
     },
     "icons": {
-        "16": "icons/link_16.png",
-        "64": "icons/link_64.png",
-        "128": "icons/link_128.png"
+        "16": "icons/link.svg",
+        "64": "icons/link.svg",
+        "128": "icons/link.svg"
     },
     "manifest_version": 2,
     "name": "iShortener",
@@ -39,5 +39,5 @@
         "clipboardWrite"
     ],
     "short_name": "iShortener",
-    "version": "1.7"
+    "version": "1.8"
 }
