@@ -3,8 +3,7 @@
 // UPDATE:  14/06/2018  - Optimize update and Bug fixed.
 //          12/06/2019  - Add QR code.
 //          13/06/2019  - Add Dark Mode.
-
-
+//          24/01/2020  - Customize #.
 
 // # Event
 document.getElementById('optionsX').addEventListener('click', show_options);
@@ -13,6 +12,7 @@ document.getElementById('tag').addEventListener('click', save_optionsX);
 document.getElementById('sharebt').addEventListener('click', save_optionsX);
 document.getElementById('qrcbt').addEventListener('click', save_optionsX);
 document.getElementById('darkmode').addEventListener('click', save_optionsX);
+document.getElementById('hashtag').addEventListener('keyup', save_optionsX);
 
 // document.getElementById('about').addEventListener('click', gotoAbout);
 
@@ -47,7 +47,7 @@ browser.runtime.onMessage.addListener(
   function (request) {
     let resultSht = request;
     if (resultSht.shortLink) {
-      setURLshorten(resultSht.shortLink, resultSht.title);
+      setURLshorten(resultSht.shortLink, resultSht.title, resultSht.longLink);
       // checkDNT();
     }
   }
@@ -70,7 +70,7 @@ function checkDNT() {
 function restore_options() {
   let manifestData = browser.runtime.getManifest();
   let version = document.getElementById('version');
-  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode", "mode"]);
+  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode", "mode", "hashtag"]);
 
   getting.then(onGotX, onError);
   version.textContent = '「 ver. ' + manifestData.version + ' 」';
@@ -82,13 +82,17 @@ function onGotX(items) {
   let sharebt = document.getElementById('sharebt');
   let qrcbt = document.getElementById('qrcbt');
   let darkbt = document.getElementById('darkmode');
+  let hashtag = document.getElementById('hashtag');
 
   if (items.twitterTag) {
     tag.checked = items.twitterTag.value;
     if (items.twitterTag.value == true) {
-      w_hashtags = "&hashtags=iShortener";
+      w_hashtags = "&hashtags=" + items.hashtag.value;
+      hashtag.disabled = false;
+      hashtag.value = items.hashtag.value;
     } else {
       w_hashtags = '';
+      hashtag.disabled = true;
     }
   } else {
     tag.checked = true;
@@ -130,13 +134,13 @@ function onGotX(items) {
   }
 }
 
-function setURLshorten(shtURL, title) {
+function setURLshorten(shtURL, title, LgURL) {
   let input = document.getElementById("url");
   if (shtURL != undefined) {
     hide();
     input.value = shtURL;
     copy();
-    share(shtURL, title);
+    share(shtURL, title, LgURL);
     genQRC(shtURL);
     input.blur()
   }
@@ -166,7 +170,7 @@ function hide() {
   checkDNT();
 }
 
-function share(shtURL, title_o) {
+function share(shtURL, title_o, lgURL) {
   // checkDNT();
   let title = encodeURI(title_o)
   let url = encodeURI(shtURL);
@@ -174,9 +178,9 @@ function share(shtURL, title_o) {
   let facebook = document.getElementById("facebook");
   let hashtags = w_hashtags;
   tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + hashtags;
-  document.getElementsByTagName('iframe')[1].parentNode.appendChild(tweet);
+  document.getElementsByTagName('iframe')[0].parentNode.appendChild(tweet);
 
-  facebook.src = "https://www.facebook.com/plugins/share_button.php?href=" + shtURL + "&layout=button&size=small&mobile_iframe=true&width=60&height=20&appId";
+  facebook.src = "https://www.facebook.com/plugins/share_button.php?href=" + lgURL + "&layout=button&size=small&mobile_iframe=true&width=60&height=20&appId";
   document.getElementsByTagName('iframe')[0].parentNode.appendChild(facebook);
 }
 
@@ -204,6 +208,14 @@ function save_optionsX() {
   let qrcbt = document.getElementById('qrcbt').checked;
   let show_qrc = document.getElementById('qrcX');
   let darkbt = document.getElementById('darkmode').checked;
+  let hashtag_in = document.getElementById('hashtag');
+
+  if (!tag) {
+    hashtag_in.value = "iShortener"
+    hashtag_in.disabled = true;
+  } else {
+    hashtag_in.disabled = false;
+  }
 
   if (qrcbt) {
     show_qrc.style.display = "block";
@@ -227,6 +239,10 @@ function save_optionsX() {
     name: "#",
     value: tag,
   }
+  var hashtag = {
+    name: "Hashtag",
+    value: hashtag_in.value,
+  }
   var sharebutton = {
     name: "Facebook, Twitter",
     value: sharebt,
@@ -243,7 +259,7 @@ function save_optionsX() {
 
   console.log(mode);
   // store the objects
-  browser.storage.local.set({ twitterTag, sharebutton, qrcode, mode })
+  browser.storage.local.set({ twitterTag, sharebutton, qrcode, mode, hashtag })
     .then(setItem, onError);
 }
 

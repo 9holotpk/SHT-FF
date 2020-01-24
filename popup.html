@@ -1,6 +1,8 @@
 <!--    DEV. EXTENTION BY iTON // => POPUP.HTML
-        NOTE:    Click to Shorten URL
-        UPDATE:  13/06/2018  - Button Fixed.                         
+        NOTE:   Click to Shorten URL
+        UPDATE: 13/06/2018  - Button Fixed.  
+                24/01/2020  - Customize #.  
+                            - Facebook block shortURL,use logURL now for shared.                     
 -->
 <!DOCTYPE html>
 <html>
@@ -8,19 +10,17 @@
 <head>
     <meta charset="utf-8" />
     <script type="text/javascript" src="lib/qrcodegen.js"></script>
-    <!-- <script type="text/javascript" src="popup.js"></script>
-    <script type="text/javascript" src="background.js"></script> -->
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body id="theme">
     <div id="bodyPopup">
         <div id="input">
-            <input type="text" name="shortURL" id="url" value="" class="result">
+            <input type="text" name="shortURL" id="url" value="" class="result" style="width: 10em;">
             <a id="loading" height="20px" style="vertical-align: middle;">
                 <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" style="vertical-align: -15%;"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px"
-                    viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                    xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" viewBox="0 0 50 50"
+                    style="enable-background:new 0 0 50 50;" xml:space="preserve">
                     <path fill="#000"
                         d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
                         <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25"
@@ -29,7 +29,7 @@
                 </svg>
             </a>
             <a id="complete" alt="" height="20px" style="display:none; vertical-align: middle;">
-                <svg id="my-icon" aria-labelledby="svg-my-icon-title" focusable="false"  style="vertical-align: -15%;"
+                <svg id="my-icon" aria-labelledby="svg-my-icon-title" focusable="false" style="vertical-align: -15%;"
                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290" width="20px" height="20px">
                     <title id="svg-my-icon-title">Checkmark Icon</title>
                     <circle class="circle" cx="145" cy="145" r="124.67"
@@ -38,7 +38,6 @@
                         style="fill:none;stroke:#21b587;stroke-linecap:round;stroke-linejoin:round;stroke-width:25px" />
                 </svg>
             </a>
-            <!-- <img src="img/okey.svg" id="complete" alt="" height="20px" style="display:none; vertical-align: middle;"> -->
             <img src="img/faq.png" id="faq" alt="" height="20px" style="display:none; vertical-align: middle;">
         </div>
         <pre></pre>
@@ -48,30 +47,27 @@
         <div id="shareX" align="center">
             <div id="dnt" align="center" style="display:none;">
                 <a align="center" style="font: 0.8em sans-serif; color: rgb(155, 155, 155)">
-                    Share Button is Disable
+                    <b>Share Button is Disable</b>
                 </a>
                 <br>
                 <a align="center" style="font: 0.7em sans-serif; color: rgb(180, 5, 5)">
                     ( Browser using the “Do Not Track” )
                 </a>
             </div>
-            <div id="shareY" align="center">
-                <iframe id="facebook" src="" width="60" height="25" style="border:none;overflow:hidden" scrolling="no"
+            <div id="shareY" align="center" >
+                <iframe id="facebook" src="" width="90" height="25" style="border:none;overflow:hidden" scrolling="no"
                     frameborder="0" allowTransparency="true">
                 </iframe>
-                <iframe id="tweet" src="" width="80" height="25" title="Twitter Tweet Button"
-                    style="border: 0; overflow: hidden;">
+                <iframe id="tweet" src="" width="70" height="25" title="Twitter Tweet Button"
+                    style="border: 0; overflow: hidden; align-items: center;">
                 </iframe>
             </div>
-
         </div>
         <div id="qrcX" align="center">
-            <pre></pre>
             <table class="noborder" style="width:100%">
                 <tbody>
                     <tr id="svg-xml-row">
-                        <canvas id="qrcode-canvas"
-                            style="padding:5px;  display: none"></canvas>
+                        <canvas id="qrcode-canvas" style="padding:5px;  display: none"></canvas>
                     </tr>
                 </tbody>
             </table>
@@ -82,24 +78,20 @@
             </a>
         </div>
         <div class="border" align="center" id="myDIV" style="display: none;">
-            <!-- <a>
-                <span>
-                    <img src="img/setting.svg" id="setting" alt="setting" style="vertical-align: middle;" >
-                </span>
-            </a> -->
             <div align="left" style="padding-left: 1em">
                 <br>
                 <input type="checkbox" name="qrcbt" id="qrcbt">
-                <label for="qrcbt" class="textOption">QR Code</label>
+                <label for="qrcbt" class="textOption"><b>QR Code</b></label>
                 <br>
                 <input type="checkbox" name="sharebt" id="sharebt">
-                <label for="sharebt" class="textOption">Share Button</label>
-                <br>
-                <input type="checkbox" name="tag" id="tag">
-                <label for="tag" class="textOption">Include # in Tweet</label>
+                <label for="sharebt" class="textOption"><b>Share Button</b></label>
                 <br>
                 <input type="checkbox" name="darkmode" id="darkmode">
-                <label for="darkmode" class="textOption">Dark mode</label>
+                <label for="darkmode" class="textOption"><b>Dark mode</b></label>
+                <br>
+                <input type="checkbox" name="tag" id="tag">
+                <label for="tag" class="textOption"><b>#</b></label>
+                <input type="text" name="hastag" id="hashtag" value="iShortener" class="input_h">
                 <br>
             </div>
             <a class="textOptionHelp">(Takes effect the next time.)</a>
@@ -110,8 +102,6 @@
     </div>
 
     <script src="popup.js"></script>
-    <!-- <script src="lib/qrcodegen.js"></script> -->
-    <!-- <script type="text/javascript" src="background.js"></script> -->
 </body>
 
 </html>

@@ -34,7 +34,7 @@ function shortenLink(link, title) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       const response = (JSON.parse(xhr.responseText));
-      browser.runtime.sendMessage({shortLink: response.shortLink, title: title});
+      browser.runtime.sendMessage({shortLink: response.shortLink, title: title, longLink: link});
     }
   };
 
