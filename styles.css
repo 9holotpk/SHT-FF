@@ -6,7 +6,7 @@ UPDATE: 26/11/2018  - Update #url #bodyPopup input size.
 */
 
 body {
-    width: 170px;
+    width: 250px;
 }
 
 #input {
@@ -21,7 +21,7 @@ body {
 }
 
 .options {
-    font: 0.8em sans-serif; 
+    /* font: 0.8em sans-serif;  */
     color: rgb(165, 164, 164);
     cursor: pointer;
 }
@@ -45,6 +45,22 @@ body {
     cursor: pointer;
 }
 
+.darkmode small {
+    color: rgb(206, 206, 206);
+}
+
+.darkmode .card {
+    background-color: rgb(0, 0, 0) !important;
+}
+
+.darkmode .spinner-border {
+    color: rgb(255, 255, 255);
+}
+
+.darkmode hr {
+    border-color: rgb(182, 182, 182);
+}
+
 .textOptionHelp {
     font: 0.7em sans-serif; 
     color: rgb(220,70,48);
@@ -55,14 +71,14 @@ body {
     border-radius: 5px;
 }
 
-.version {
+/* .version {
     font: 0.75em 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: gray;
-}
+} */
 
-#shareX {
+/* #shareX {
     height: 2em;
-}
+} */
 
 #url {
     width: 12em;
@@ -132,11 +148,16 @@ input {
     width: 60%;
 }
 
-.shareY {
+/* .shareY {
     padding: 5px;
     margin-right: 5px;
     text-align: center;
     align-content: center;
     justify-content: center;
     
+} */
+
+.cur-pointer {
+    cursor: pointer;
+    color: blue !important;
 }

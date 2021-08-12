@@ -2,12 +2,14 @@
     "applications": {
         "gecko": {
             "id": "iShortener@9holotpk",
-            "strict_min_version": "51.0"
+            "strict_min_version": "79.0"
         }
     },
     "author": "9holotpk",
     "background": {
-        "scripts": ["background.js"],
+        "scripts": [
+            "background.js"
+        ],
         "persistent": true
     },
     "page_action": {
@@ -39,5 +41,5 @@
         "clipboardWrite"
     ],
     "short_name": "iShortener",
-    "version": "3"
+    "version": "4.0"
 }

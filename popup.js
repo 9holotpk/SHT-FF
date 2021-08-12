@@ -13,11 +13,16 @@ document.getElementById('sharebt').addEventListener('click', save_optionsX);
 document.getElementById('qrcbt').addEventListener('click', save_optionsX);
 document.getElementById('darkmode').addEventListener('click', save_optionsX);
 document.getElementById('hashtag').addEventListener('keyup', save_optionsX);
+document.getElementById('atcopy').addEventListener('click', save_optionsX);
+document.getElementById('complete').addEventListener('click', copy);
+document.getElementById('copped').addEventListener('click', copy);
 
 // document.getElementById('about').addEventListener('click', gotoAbout);
 
 // # Value
 let w_hashtags = "&hashtags=iShortener";
+let copy_now = false;
+let share_now = false;
 
 // # Onload
 onGot();
@@ -26,7 +31,7 @@ function onGot() {
   browser.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
     TAB_URL = tabs[0].url;
     TITLE = tabs[0].title;
-    console.log('Page: (' + tabs[0].id + ') ' + TITLE);
+    // console.log('Page: (' + tabs[0].id + ') ' + TITLE);
     if (TAB_URL) {
       let URL_RES = TAB_URL.substring(0, 4);
       if (URL_RES === 'http') {
@@ -35,8 +40,7 @@ function onGot() {
         document.getElementById("loading").style.display = "none";
         document.getElementById("faq").style.display = "inline";
         document.getElementById("noURL").style.display = "block";
-        document.getElementById("shareX").style.display = "none";
-        document.getElementById("dnt").style.display = "none";
+        document.getElementById("shareY").style.display = "none";
         document.getElementById("qrcX").style.display = "none";
       }
     }
@@ -48,17 +52,14 @@ browser.runtime.onMessage.addListener(
     let resultSht = request;
     if (resultSht.shortLink) {
       setURLshorten(resultSht.shortLink, resultSht.title, resultSht.longLink);
-      // checkDNT();
     }
   }
 );
 
 function checkDNT() {
   console.log('doNotTrack', window.navigator.doNotTrack);
-  // alert("doNotTrack");
   let dnt = window.navigator.doNotTrack;
   if (dnt == "1") {
-    // document.getElementById("shareX").style.display = "none";
     document.getElementById("dnt").style.display = "block";
     document.getElementById("shareY").style.display = "none";
   } else {
@@ -70,10 +71,10 @@ function checkDNT() {
 function restore_options() {
   let manifestData = browser.runtime.getManifest();
   let version = document.getElementById('version');
-  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode", "mode", "hashtag"]);
+  let getting = browser.storage.local.get(["twitterTag", "sharebutton", "qrcode", "mode", "hashtag", "autocopy"]);
 
   getting.then(onGotX, onError);
-  version.textContent = '「 ver. ' + manifestData.version + ' 」';
+  version.textContent = manifestData.version;
 
 }
 
@@ -83,6 +84,7 @@ function onGotX(items) {
   let qrcbt = document.getElementById('qrcbt');
   let darkbt = document.getElementById('darkmode');
   let hashtag = document.getElementById('hashtag');
+  let atcopy = document.getElementById('atcopy');
 
   if (items.twitterTag) {
     tag.checked = items.twitterTag.value;
@@ -100,14 +102,16 @@ function onGotX(items) {
 
   if (items.sharebutton) {
     sharebt.checked = items.sharebutton.value;
-    let show_button = document.getElementById('shareX');
     if (items.sharebutton.value) {
-      show_button.style.display = "block";
+      // show_button.style.display = "block";
+      share_now = true;
     } else {
-      show_button.style.display = "none";
+      // show_button.style.display = "none";
+      share_now = false;
     }
   } else {
     sharebt.checked = true;
+    share_now = true;
   }
 
   if (items.qrcode) {
@@ -132,6 +136,20 @@ function onGotX(items) {
   } else {
     darkbt.checked = false;
   }
+
+  if (items.autocopy) {
+    atcopy.checked = items.autocopy.value;
+    if (items.autocopy.value) {
+      atcopy.checked = true;
+      copy_now = true;
+    } else {
+      atcopy.checked = false;
+      copy_now = false;
+    }
+  } else {
+    atcopy.checked = true;
+    copy_now = true;
+  }
 }
 
 function setURLshorten(shtURL, title, LgURL) {
@@ -139,7 +157,12 @@ function setURLshorten(shtURL, title, LgURL) {
   if (shtURL != undefined) {
     hide();
     input.value = shtURL;
-    copy();
+    if (copy_now) {
+      copy();
+    }
+    if (share_now) {
+      document.getElementById("shareY").style.display = "block";
+    }
     share(shtURL, title, LgURL);
     genQRC(shtURL);
     input.blur()
@@ -156,7 +179,14 @@ function genQRC(url) {
 }
 
 function copy() {
+  let complete = document.getElementById("complete");
+  let copped = document.getElementById("copped");
+
   let copyText = document.querySelector("#url");
+
+  complete.style.display = "none";
+  copped.style.display = "inline";
+
   copyText.select();
   document.execCommand("copy");
 }
@@ -167,21 +197,19 @@ function hide() {
 
   load.style.display = "none";
   complete.style.display = "inline";
-  checkDNT();
 }
 
 function share(shtURL, title_o, lgURL) {
-  // checkDNT();
   let title = encodeURI(title_o)
   let url = encodeURI(shtURL);
-  let tweet = document.getElementById("tweet");
-  let facebook = document.getElementById("facebook");
+  let tweetbt = document.getElementById("tweetbt");
+  let facebookbt = document.getElementById("facebookbt");
   let hashtags = w_hashtags;
-  tweet.src = "https://platform.twitter.com/widgets/tweet_button.html?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + hashtags;
-  document.getElementsByTagName('iframe')[0].parentNode.appendChild(tweet);
 
-  facebook.src = "https://www.facebook.com/plugins/share_button.php?href=" + lgURL + "&layout=button&size=small&mobile_iframe=true&width=60&height=20&appId";
-  document.getElementsByTagName('iframe')[0].parentNode.appendChild(facebook);
+  tweetbt.href = "https://twitter.com/intent/tweet?size=m&url=" + shtURL + "&related=9holotpk&text=" + title + hashtags;
+
+  facebookbt.href = "https://www.facebook.com/sharer/sharer.php?u=" + lgURL;
+
 }
 
 function show_options() {
@@ -204,11 +232,12 @@ function gotoAbout() {
 function save_optionsX() {
   let tag = document.getElementById('tag').checked;
   let sharebt = document.getElementById('sharebt').checked;
-  let show_button = document.getElementById('shareX');
+  let show_button = document.getElementById('shareY');
   let qrcbt = document.getElementById('qrcbt').checked;
   let show_qrc = document.getElementById('qrcX');
   let darkbt = document.getElementById('darkmode').checked;
   let hashtag_in = document.getElementById('hashtag');
+  let atcopy = document.getElementById('atcopy').checked;
 
   if (!tag) {
     hashtag_in.value = "iShortener"
@@ -257,9 +286,14 @@ function save_optionsX() {
     value: darkbt
   }
 
+  var autocopy = {
+    name: 'autocopy',
+    value: atcopy
+  }
+
   console.log(mode);
   // store the objects
-  browser.storage.local.set({ twitterTag, sharebutton, qrcode, mode, hashtag })
+  browser.storage.local.set({ twitterTag, sharebutton, qrcode, mode, hashtag, autocopy })
     .then(setItem, onError);
 }
 
