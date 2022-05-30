@@ -54,21 +54,6 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-browser.runtime.onInstalled.addListener(function () {
-  browser.declarativeContent.onPageChanged.removeRules(undefined, function () {
-    browser.declarativeContent.onPageChanged.addRules([
-      {
-        conditions: [
-          new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { schemes: ['https', 'http'] }
-          })
-        ],
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-      }
-    ]);
-  });
-});
-
 function onError(error) {
   console.log(`Error: ${error}`);
 }
