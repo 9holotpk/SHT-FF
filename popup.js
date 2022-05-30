@@ -1,25 +1,18 @@
-// DEV. EXTENTION BY iTON // => POPUP.JS
-// NOTE: Click to Shorten URL
-
 // # Event
-document.getElementById("qrcode-canvas").addEventListener("click", save_qrcode);
-document.getElementById("optionsX").addEventListener("click", show_options);
-document.addEventListener("DOMContentLoaded", restore_options);
-document.getElementById("tag").addEventListener("click", save_optionsX);
-document.getElementById("sharebt").addEventListener("click", save_optionsX);
-document.getElementById("qrcbt").addEventListener("click", save_optionsX);
-document.getElementById("darkmode").addEventListener("click", save_optionsX);
-document.getElementById("hashtag").addEventListener("keyup", save_optionsX);
-document.getElementById("atcopy").addEventListener("click", save_optionsX);
-document.getElementById("qrcodeurlbt").addEventListener("click", save_optionsX);
+document.addEventListener("DOMContentLoaded", initialLoad);
+document.getElementById("qrcode-canvas").addEventListener("click", saveQRCode);
+document.getElementById("optionsX").addEventListener("click", showSettings);
+document.getElementById("sharebt").addEventListener("click", saveSettings);
+document.getElementById("qrcbt").addEventListener("click", saveSettings);
+document.getElementById("darkmode").addEventListener("click", saveSettings);
+document.getElementById("atcopy").addEventListener("click", saveSettings);
+document.getElementById("qrcodeurlbt").addEventListener("click", saveSettings);
 document.getElementById("complete").addEventListener("click", copy);
 document.getElementById("copped").addEventListener("click", copy);
-
 document.getElementById("tweetbt").addEventListener("click", shareToTW);
 document.getElementById("facebookbt").addEventListener("click", shareToFB);
 
 // # Value
-let w_hashtags = "&hashtags=iShortener";
 let copy_now = false;
 let qrcode_url = false;
 let share_now = false;
@@ -28,42 +21,68 @@ let urlshort = '';
 let tweetbt = '';
 let facebookbt = '';
 
-// # Onload
-onGot();
+let token = '';
+let domain = '';
+
+function handleResponse(message) {
+  switch (message.script) {
+    case "token": {
+      const now = new Date();
+      now.setTime(now.getTime() + 336 * 3600 * 1000);
+      browser.storage.local.set(
+        {
+          token: message.token,
+          domain: message.domain,
+          expiration: now.getTime()
+        },
+        function () {
+          token = message.token;
+          domain = message.domain;
+          onGot();
+        }
+      );
+    }
+      break;
+    case "short": {
+      setURLshorten(message.shortLink, message.title, message.link);
+    }
+      break;
+    default:
+      break;
+  }
+}
+
+function handleError(error) {
+  console.log(`Error: ${error}`);
+}
 
 function onGot() {
   urlshort = '';
-  browser.tabs.query(
-    { active: true, lastFocusedWindow: true },
-    function (tabs) {
-      TAB_URL = tabs[0].url;
-      TITLE = tabs[0].title;
-      if (TAB_URL) {
-        let URL_RES = TAB_URL.substring(0, 4);
-        if (URL_RES === "http") {
-          browser.runtime.sendMessage({
-            script: "shortenLink",
-            tab_url: TAB_URL,
-            title: TITLE,
-          });
-        } else {
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("faq").style.display = "inline";
-          document.getElementById("noURL").style.display = "block";
-          document.getElementById("shareY").style.display = "none";
-          document.getElementById("qrcX").style.display = "none";
-        }
+  browser.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+    TAB_URL = tabs[0].url;
+    TITLE = tabs[0].title;
+    if (TAB_URL) {
+      let URL_RES = TAB_URL.substring(0, 4);
+      if (URL_RES === "http") {
+        browser.runtime.sendMessage({
+          script: "post_url",
+          token: token,
+          domain: domain,
+          link: TAB_URL,
+          title: TITLE,
+        }, function(response) {
+          handleResponse(response)
+        });
+      } else {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("faq").style.display = "inline";
+        document.getElementById("noURL").style.display = "block";
+        document.getElementById("shareY").style.display = "none";
+        document.getElementById("qrcX").style.display = "none";
       }
     }
-  );
+  });
 }
-
-browser.runtime.onMessage.addListener(function (request) {
-  let resultSht = request;
-  if (resultSht.shortLink) {
-    setURLshorten(resultSht.shortLink, resultSht.title, resultSht.longLink);
-  }
-});
 
 function checkDNT() {
   console.log("doNotTrack", window.navigator.doNotTrack);
@@ -77,45 +96,47 @@ function checkDNT() {
   }
 }
 
-function restore_options() {
+function initialLoad() {
   let manifestData = browser.runtime.getManifest();
   let version = document.getElementById("version");
-  let getting = browser.storage.local.get([
-    "twitterTag",
-    "sharebutton",
-    "qrcode",
-    "mode",
-    "hashtag",
-    "autocopy",
-    "qrcodeurl"
-  ]);
 
-  getting.then(onGotX, onError);
+  browser.storage.local.get(
+    ["sharebutton", "qrcode", "mode", "autocopy", "qrcodeurl"],
+    function (result) {
+      onGotX(result);
+    }
+  );
+
+  browser.storage.local.get(
+    ["token", "domain", "expiration"],
+    function (result) {
+      if (!result.token || !result.domain) {
+        browser.runtime.sendMessage({script: "get_token"}, function(response) {
+          handleResponse(response)
+        });
+      } else {
+        if (result.expiration < new Date().getTime()) {
+          browser.runtime.sendMessage({script: "get_token"}, function(response) {
+            handleResponse(response)
+          });
+        } else {
+          token = result.token;
+          domain = result.domain;
+          onGot();
+        }
+      }
+    }
+  );
+
   version.textContent = manifestData.version;
 }
 
 function onGotX(items) {
-  let tag = document.getElementById("tag");
   let sharebt = document.getElementById("sharebt");
   let qrcbt = document.getElementById("qrcbt");
   let darkbt = document.getElementById("darkmode");
-  let hashtag = document.getElementById("hashtag");
   let atcopy = document.getElementById("atcopy");
   let qrcodeurlbt = document.getElementById("qrcodeurlbt");
-
-  if (items.twitterTag) {
-    tag.checked = items.twitterTag.value;
-    if (items.twitterTag.value == true) {
-      w_hashtags = "&hashtags=" + items.hashtag.value;
-      hashtag.disabled = false;
-      hashtag.value = items.hashtag.value;
-    } else {
-      w_hashtags = "";
-      hashtag.disabled = true;
-    }
-  } else {
-    tag.checked = true;
-  }
 
   if (items.sharebutton) {
     sharebt.checked = items.sharebutton.value;
@@ -214,7 +235,7 @@ function genQRC(url) {
   var canvas = document.getElementById("qrcode-canvas");
   var QRC = qrcodegen.QrCode;
   var qr0 = QRC.encodeText(url, QRC.Ecc.MEDIUM);
-  var scale = 5;
+  var scale = 15;
   qr0.drawCanvas(scale, 1, canvas);
   canvas.style.removeProperty("display");
 }
@@ -243,14 +264,12 @@ function hide() {
 function share(shtURL, title_o, lgURL) {
   let title = encodeURI(title_o);
   let url = encodeURI(shtURL);
-  let hashtags = w_hashtags;
 
   tweetbt =
     "https://twitter.com/intent/tweet?size=m&url=" +
     shtURL +
     "&related=9holotpk&text=" +
-    title +
-    hashtags;
+    title;
 
   facebookbt = "https://www.facebook.com/sharer/sharer.php?u=" + lgURL;
 }
@@ -267,7 +286,7 @@ function shareToFB() {
   });
 }
 
-function show_options() {
+function showSettings() {
   var x = document.getElementById("myDIV");
   if (x.style.display === "none") {
     x.style.display = "block";
@@ -283,23 +302,14 @@ function gotoAbout() {
   );
 }
 
-function save_optionsX() {
-  let tag = document.getElementById("tag").checked;
+function saveSettings() {
   let sharebt = document.getElementById("sharebt").checked;
   let show_button = document.getElementById("shareY");
   let qrcbt = document.getElementById("qrcbt").checked;
   let show_qrc = document.getElementById("qrcX");
   let darkbt = document.getElementById("darkmode").checked;
-  let hashtag_in = document.getElementById("hashtag");
   let atcopy = document.getElementById("atcopy").checked;
   let qrcodeurlbt = document.getElementById("qrcodeurlbt").checked;
-
-  if (!tag) {
-    hashtag_in.value = "iShortener";
-    hashtag_in.disabled = true;
-  } else {
-    hashtag_in.disabled = false;
-  }
 
   if (qrcbt) {
     show_qrc.style.display = "block";
@@ -318,15 +328,6 @@ function save_optionsX() {
   } else {
     show_button.style.display = "none";
   }
-  // define objects
-  var twitterTag = {
-    name: "#",
-    value: tag,
-  };
-  var hashtag = {
-    name: "Hashtag",
-    value: hashtag_in.value,
-  };
   var sharebutton = {
     name: "Facebook, Twitter",
     value: sharebt,
@@ -352,12 +353,21 @@ function save_optionsX() {
   };
 
   // store the objects
-  browser.storage.local
-    .set({ twitterTag, sharebutton, qrcode, mode, hashtag, autocopy, qrcodeurl })
-    .then(setItem, onError);
+  browser.storage.local.set(
+    {
+      sharebutton: sharebutton,
+      qrcode: qrcode,
+      mode: mode,
+      autocopy: autocopy,
+      qrcodeurl: qrcodeurl
+    },
+    function () {
+      // console.log('Save', mode);
+    }
+  );
 }
 
-function save_qrcode() {
+function saveQRCode() {
   var canvas = document.getElementById("qrcode-canvas");
   var gh = '';
 
@@ -365,17 +375,17 @@ function save_qrcode() {
     var canvas_draft = document.getElementById("qrcode-canvas-draft");
     var context = canvas_draft.getContext("2d");
 
-    canvas_draft.width = 200;
-    canvas_draft.height = 250;
+    canvas_draft.width = 410;
+    canvas_draft.height = 450;
 
     context.fillStyle = "white";
-    context.fillRect(0, 0, 220, 250);
-    context.drawImage(canvas, 32.5, 32.5);
+    context.fillRect(0, 0, 410, 450);
+    context.drawImage(canvas, 2.5, 2.5);
 
-    context.font = "16pt monospace";
+    context.font = "20pt monospace";
     context.fillStyle = "black";
     context.textAlign = "center";
-    context.fillText(urlshort, 100, 200);
+    context.fillText(urlshort, 202, 430);
 
     gh = canvas_draft.toDataURL('png');
   } else {
@@ -387,12 +397,4 @@ function save_qrcode() {
   a.download = urlshort + '.png';
 
   a.click()
-}
-
-function setItem() {
-  // console.log("OK");
-}
-
-function onError(error) {
-  console.log(`Error: ${error}`);
 }

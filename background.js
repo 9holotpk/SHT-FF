@@ -1,59 +1,77 @@
-// DEV. EXTENTION BY iTON // => BACKGROUND.JS
-// NOTE:    Click to Shorten URL
-// UPDATE:  10/04/2018 - Transitioning Google URL Shortener to Firebase Dynamic Links 
-//          14/06/2018 - Optimize update and Bug fixed.
-//          26/11/2018  - Update API and Changed URL Link.
-
-// API
-
 let TAB_URL = '';
 let TITLE = '';
+const API_GET_KEY = "https://us-central1-url-shortener-x.cloudfunctions.net/getKey";
 
-browser.runtime.onMessage.addListener(function (request) {
-  let resultX = request;
-  if (resultX.script === "shortenLink") {
-    shortenLink(resultX.tab_url, resultX.title);
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.hasOwnProperty("script")) {
+    switch (request.script) {
+      case "get_token": {
+        const url = API_GET_KEY;
+        fetch(url)
+          .then(response => response.text())
+          .then(response => {
+            const message = {
+              script: 'token',
+              token: JSON.parse(response).key,
+              domain: JSON.parse(response).domain
+            };
+            sendResponse(message);
+          })
+          .catch()
+        return true;
+      }
+      case "post_url": {
+        const url = request.token;
+        fetch(url, {
+          method: 'post',
+          headers: {
+            "Content-type": "application/json; charset=UTF-8"
+          },
+          body: JSON.stringify({
+            "dynamicLinkInfo": {
+              "dynamicLinkDomain": request.domain,
+              "link": request.link
+            },
+            "suffix": {
+              "option": "SHORT"
+            }
+          })
+        })
+          .then(response => response.text())
+          .then(response => {
+            const message = {
+              script: 'short',
+              shortLink: JSON.parse(response).shortLink,
+              title: request.title,
+              link: request.link
+            };
+            sendResponse(message);
+          })
+          .catch()
+        return true;
+      }
+    }
   }
+});
+
+browser.runtime.onInstalled.addListener(function () {
+  browser.declarativeContent.onPageChanged.removeRules(undefined, function () {
+    browser.declarativeContent.onPageChanged.addRules([
+      {
+        conditions: [
+          new chrome.declarativeContent.PageStateMatcher({
+            pageUrl: { schemes: ['https', 'http'] }
+          })
+        ],
+        actions: [new chrome.declarativeContent.ShowPageAction()]
+      }
+    ]);
+  });
 });
 
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-function shortenLink(link, title) {
-  const longDynamicLink = link;
-  const urlKey = "https://us-central1-url-shortener-x.cloudfunctions.net/getKey";
-
-  function reqListener() {
-    const api = JSON.parse(this.responseText);
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", api.key, true);
-
-    xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        const response = (JSON.parse(xhr.responseText));
-        browser.runtime.sendMessage({ shortLink: response.shortLink, title: title, longLink: link });
-      }
-    };
-
-    // xhr.send(JSON.stringify({ "longUrl": link }));
-    xhr.send(JSON.stringify({
-      "dynamicLinkInfo": {
-        "dynamicLinkDomain": api.domain,
-        "link": longDynamicLink
-      },
-      "suffix": {
-        "option": "SHORT"
-      }
-    }));
-  }
-
-  const oReq = new XMLHttpRequest();
-  oReq.addEventListener("load", reqListener);
-  oReq.open("GET", urlKey);
-  oReq.send();
 
 
-
-}
